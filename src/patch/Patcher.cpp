@@ -32,7 +32,7 @@
 #include "OldStream.h"
 #include "NewStream.h"
 #include "patch_types.h"
-
+#include "../LogUtil.h"
 #define _CompressPlugin_lzma  //default support lzma
 #include "../../lzma/C/LzmaDec.h" // http://www.7-zip.org/sdk.html
 #define _CompressPlugin_lzma2 //default support lzma2
@@ -41,7 +41,7 @@
 #include "../../HDiffPatch/decompress_plugin_demo.h"
 
 #define  check(value,error) { \
-    if (!(value)){ printf(#value" "#error"!\n");  \
+    if (!(value)){ printf(#value" "#error"!\n"); \
         if (result==PATCH_SUCCESS) result=error; if (!_isInClear){ goto clear; } } }
 
 #if (!_IS_NEED_VIRTUAL_ZIP)
@@ -63,7 +63,7 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     hpatch_TStreamOutput        io_ref_cache;
     hpatch_TStreamInput*        input_ref=0;
     hpatch_TStreamOutput*       output_ref=0;
-    TPatchResult    result=PATCH_SUCCESS;
+    TPatchResult result = PATCH_SUCCESS;
     bool            _isInClear=false;
     bool            isUsedTempFile=false;
     TByte*          temp_cache =0;
@@ -137,6 +137,7 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     
     check(OldStream_getDecompressData(&oldZip,zipDiffData.oldRefList,zipDiffData.oldRefCount,
                                       output_ref _VIRTUAL_IN(virtual_in)),PATCH_OLDDECOMPRESS_ERROR);
+    LOGCATD("check%d",123);
     check(OldStream_open(&oldStream,&oldZip,zipDiffData.oldRefList,zipDiffData.oldRefCount,
                          0,0,input_ref _VIRTUAL_IN(virtual_in)), PATCH_OLDSTREAM_ERROR);
     check(oldStream.stream->streamSize==diffInfo.oldDataSize,PATCH_OLDDATA_ERROR);
@@ -192,16 +193,28 @@ TPatchResult VirtualZipPatch(const char* oldZipPath,const char* zipDiffPath,cons
     hpatch_TFileStreamInput    oldZipStream;
     hpatch_TFileStreamInput    zipDiffStream;
     hpatch_TFileStreamOutput   outNewZipStream;
+
     TPatchResult    result=PATCH_SUCCESS;
     bool            _isInClear=false;
     
     hpatch_TFileStreamInput_init(&zipDiffStream);
     hpatch_TFileStreamInput_init(&oldZipStream);
     hpatch_TFileStreamOutput_init(&outNewZipStream);
+
+
+
+    // 0,1;
+    //  TPatchResult: 枚举
     check(hpatch_TFileStreamInput_open(&oldZipStream,oldZipPath),PATCH_OPENREAD_ERROR);
+
+
     check(hpatch_TFileStreamInput_open(&zipDiffStream,zipDiffPath),PATCH_OPENREAD_ERROR);
+
     check(hpatch_TFileStreamOutput_open(&outNewZipStream,outNewZipPath,(hpatch_StreamPos_t)(-1)),PATCH_OPENWRITE_ERROR);
+
     hpatch_TFileStreamOutput_setRandomOut(&outNewZipStream,hpatch_TRUE);
+
+    // 压缩操作
     result=VirtualZipPatchWithStream(&oldZipStream.base,&zipDiffStream.base,&outNewZipStream.base,
                                      maxUncompressMemory,tempUncompressFileName,threadNum,virtual_in,virtual_out);
 clear:
@@ -212,8 +225,20 @@ clear:
     return result;
 }
 
+/**
+ *
+ * @param oldZipPath
+ * @param zipDiffPath
+ * @param outNewZipPath
+ * @param maxUncompressMemory  解压内存
+ * @param tempUncompressFileName
+ * @param threadNum  线程数量
+ * @return
+ */
 TPatchResult ZipPatch(const char* oldZipPath,const char* zipDiffPath,const char* outNewZipPath,
                       size_t maxUncompressMemory,const char* tempUncompressFileName,int threadNum){
+
+    LOGCATD("invoke ZipPatch");
     return VirtualZipPatch(oldZipPath,zipDiffPath,outNewZipPath,
                            maxUncompressMemory,tempUncompressFileName,threadNum,0,0);
 }

@@ -27,14 +27,16 @@
  */
 #ifndef ZipPatch_Patcher_h
 #define ZipPatch_Patcher_h
+
 #include "../../HDiffPatch/file_for_patch.h"
 #include "VirtualZipIO.h"
+#include "../LogUtil.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 typedef enum TPatchResult {
-    PATCH_SUCCESS=0,
+    PATCH_SUCCESS = 0,
     PATCH_OPENREAD_ERROR,
     PATCH_OPENWRITE_ERROR,
     PATCH_CLOSEFILE_ERROR,
@@ -48,19 +50,19 @@ typedef enum TPatchResult {
     PATCH_OLDDECOMPRESS_ERROR,
     PATCH_OLDSTREAM_ERROR,
     PATCH_NEWSTREAM_ERROR,
-    
+
 #if (_IS_NEED_VIRTUAL_ZIP)
     PATCH_VIRTUAL_IN_BEGIN_ERROR=101,
     PATCH_VIRTUAL_IN_END_ERROR,
 #endif
 } TPatchResult;
 
-TPatchResult ZipPatch(const char* oldZipPath,const char* zipDiffPath,const char* outNewZipPath,
-                      size_t maxUncompressMemory,const char* tempUncompressFileName,int threadNum=1);
+TPatchResult ZipPatch(const char *oldZipPath, const char *zipDiffPath, const char *outNewZipPath,
+                      size_t maxUncompressMemory, const char *tempUncompressFileName, int threadNum = 1);
 
-TPatchResult ZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,const hpatch_TStreamInput* zipDiffStream,
-                                const hpatch_TStreamOutput* outNewZipStream /* Support Random Out */,
-                                size_t maxUncompressMemory,const char* tempUncompressFileName,int threadNum=1);
+TPatchResult ZipPatchWithStream(const hpatch_TStreamInput *oldZipStream, const hpatch_TStreamInput *zipDiffStream,
+                                const hpatch_TStreamOutput *outNewZipStream /* Support Random Out */,
+                                size_t maxUncompressMemory, const char *tempUncompressFileName, int threadNum = 1);
 
 
 #if (_IS_NEED_VIRTUAL_ZIP)
