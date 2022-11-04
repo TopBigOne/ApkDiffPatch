@@ -34,13 +34,9 @@
 #include "../HDiffPatch/_clock_for_demo.h"
 #include "../HDiffPatch/_atosize.h"
 #include "../HDiffPatch/libHDiffPatch/HDiff/private_diff/mem_buf.h"
+#include "main_log/LocalLog.h"
 
-#include <stdio.h>
-#include "ctime"
-#include <unistd.h>
-#include <sys/stat.h>
-#include <cstring>
-#include <cstdlib>
+LocalLog zip_diff_LocalLog;
 
 
 #ifndef _IS_NEED_MAIN
@@ -110,7 +106,11 @@ static void printUsage(){
 
 #define ZIPDIFF_OPTIONS_ERROR 1
 #define _options_check(value,errorInfo){ \
-    if (!(value)) { printf("options " errorInfo " ERROR!\n"); printUsage(); return ZIPDIFF_OPTIONS_ERROR; } }
+    if (!(value)) {                      \
+    zip_diff_LocalLog.needLog(#value,errorInfo)  ; \
+    printf("options " errorInfo " ERROR!\n");  \
+    printUsage();                        \
+    return ZIPDIFF_OPTIONS_ERROR; } }
 
 int zipdiff_cmd_line(int argc, const char * argv[]);
 
