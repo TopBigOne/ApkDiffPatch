@@ -35,6 +35,7 @@
 #include "../../HDiffPatch/compress_plugin_demo.h"
 #include "../../HDiffPatch/decompress_plugin_demo.h"
 #include "../main_log/LocalLog.h"
+LocalLog zipperLocalLog;
 
 static const TCompressPlugin_zlib zipCompatibleCompressPlugin={
     {_zlib_compressType,_default_maxCompressedSize,_default_setParallelThreadNumber,_zlib_compress},
@@ -46,7 +47,13 @@ static hpatch_TDecompress*      decompressPlugin=&zlibDecompressPlugin;
 #   define  kNormalizedZlibVersion         "1.2.11" //fixed zlib version
 #endif
 
-#define check(v) { if (!(v)) { assert(false); return false; } }
+#define check(v) { \
+                    if (!(v)) { \
+                    assert(false); \
+                   zipperLocalLog.needLog(#v,"in Zipper");\
+                    return false;  \
+                    }           \
+                    }
 
 inline static uint16_t readUInt16(const TByte* buf){
     return buf[0]|(buf[1]<<8);
