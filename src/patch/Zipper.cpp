@@ -36,6 +36,7 @@
 #include "../../HDiffPatch/decompress_plugin_demo.h"
 #include "../main_log/LocalLog.h"
 LocalLog zipperLocalLog;
+char * TAG = strdup("in Zipper");
 
 static const TCompressPlugin_zlib zipCompatibleCompressPlugin={
     {_zlib_compressType,_default_maxCompressedSize,_default_setParallelThreadNumber,_zlib_compress},
@@ -50,7 +51,7 @@ static hpatch_TDecompress*      decompressPlugin=&zlibDecompressPlugin;
 #define check(v) { \
                     if (!(v)) { \
                     assert(false); \
-                   zipperLocalLog.needLog(#v,"in Zipper");\
+                   zipperLocalLog.needLog(#v,TAG);\
                     return false;  \
                     }           \
                     }

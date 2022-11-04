@@ -33,6 +33,8 @@
 
 LocalLog zipDiffDataLocalLog;
 
+char* TAG_ZipDiffData = strdup("in ZipDiffData");// NOLINT
+
 void ZipDiffData_init(ZipDiffData *self) {
     memset(self, 0, sizeof(ZipDiffData));
     LOGCATD("invoke ZipDiffData_init");
@@ -48,7 +50,7 @@ void ZipDiffData_close(ZipDiffData *self) {
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n"); \
         LOGCATD(#value" ERROR!\n")  ;              \
-        zipDiffDataLocalLog.needLog(#value,"in ZipDiffData");         \
+        zipDiffDataLocalLog.needLog(#value,TAG_ZipDiffData);         \
         assert(false); return false; } }
 #define  check_clear(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \
