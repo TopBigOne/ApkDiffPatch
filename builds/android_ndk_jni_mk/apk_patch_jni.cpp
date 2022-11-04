@@ -3,6 +3,8 @@
 #include <jni.h>
 #include "apk_patch.h"
 #include <android/log.h>
+#include "../../src/main_log/LocalLog.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,6 +42,21 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     jenv->ReleaseStringUTFChars(patchFilePath, cPatchFilePath);
     jenv->ReleaseStringUTFChars(oldApkPath, cOldApkPath);
     return (int) result;
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+JNIEXPORT void
+Java_com_github_sisong_ApkPatch_initApkDiffPath(JNIEnv *env, jclass clazz, jstring log_path) {
+    LocalLog localLog;
+    char *logPathChar = const_cast<char *>(env->GetStringUTFChars(log_path, JNI_FALSE));
+    localLog.initLogPath(logPathChar);
 }
 
 #ifdef __cplusplus

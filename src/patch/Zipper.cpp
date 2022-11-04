@@ -34,6 +34,7 @@
 #include "../../HDiffPatch/libParallel/parallel_channel.h"
 #include "../../HDiffPatch/compress_plugin_demo.h"
 #include "../../HDiffPatch/decompress_plugin_demo.h"
+#include "../main_log/LocalLog.h"
 
 static const TCompressPlugin_zlib zipCompatibleCompressPlugin={
     {_zlib_compressType,_default_maxCompressedSize,_default_setParallelThreadNumber,_zlib_compress},

@@ -26,6 +26,9 @@
  OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "NewStream.h"
+#include "../main_log/LocalLog.h"
+
+LocalLog newLocalLog;
 
 void NewStream_init(NewStream* self){
     memset(self,0,sizeof(NewStream));
@@ -51,6 +54,7 @@ inline static void _update_fileSize(NewStream* self,int newFileIndex,
 
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \
+          newLocalLog.needLog(#value ,"in New Stream."); \
         assert(false); return 0; } }
 
 static hpatch_BOOL _NewStream_write(const hpatch_TStreamOutput* stream,

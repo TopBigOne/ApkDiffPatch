@@ -42,14 +42,24 @@
 #include "../main_log/LocalLog.h"
 
 
-
-
-
+LocalLog patcherLocalLog;
 
 #define  check(value,error) { \
     if (!(value)){ printf(#value" "#error"!\n"); \
         LOGCATE(#value" "#error"!\n");           \
+        patcherLocalLog.needLog(#value ,#error);  \
         if (result==PATCH_SUCCESS) result=error; if (!_isInClear){ goto clear; } } }
+
+//
+//void needLog(char *func_name, char *error_type) {
+//    const char *divider = " : ";
+//    char *finalLog = static_cast<char *>(malloc(1 + strlen(func_name) + strlen(divider) + strlen(error_type)));
+//    strcpy(finalLog, func_name);
+//    strcat(finalLog, divider);
+//    strcat(finalLog, error_type);
+//    LocalLog localLog;
+//    localLog.startWriteLog(finalLog);
+//}
 
 #if (!_IS_NEED_VIRTUAL_ZIP)
 static
@@ -63,8 +73,6 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
 
     char *LOG_PATH = "/data/user/0/com.example.testapkdiff/files/diff_patch/error_log";
 
-    LocalLog localLog;
-    localLog.initLogPath(LOG_PATH);
 
     LOGCATD("longTime %lld", longTime);
 
@@ -99,7 +107,6 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
 
     size_t  oldZipCESizeResult = 0;
     size_t  unzipper_cesize = 0;
-
 
     
 #if (_IS_NEED_VIRTUAL_ZIP)

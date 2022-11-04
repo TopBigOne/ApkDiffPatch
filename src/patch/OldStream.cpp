@@ -28,6 +28,9 @@
 #include "OldStream.h"
 #include <stdlib.h>
 #include "patch_types.h"
+#include "../main_log/LocalLog.h"
+
+LocalLog oldStreamLocalLog;
 
 
 int OldStream_getDecompressFileCount(const UnZipper* oldZip,const uint32_t* refList,
@@ -127,6 +130,7 @@ void OldStream_close(OldStream* self){
 
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \
+         oldStreamLocalLog.needLog(#value,"in OldStream");  \
         result=false; assert(false); goto clear; } }
 
 

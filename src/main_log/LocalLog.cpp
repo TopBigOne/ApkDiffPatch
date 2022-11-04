@@ -5,43 +5,26 @@
 #include "LocalLog.h"
 #include "../LogUtil.h"
 
-
-#include <stdio.h>
-#include "ctime"
-#include <unistd.h>
-#include <sys/stat.h>
-#include <cstring>
-#include <cstdlib>
-
-#define  LOG_PATH /data/user/0/com.example.testapkdiff/files/diff_patch/error_log;
-
-// /data/user/0/com.example.testapkdiff/files/
-const char *logPath = "/data/user/0/com.example.testapkdiff/files/diff_patch/error_log";
-
 void LocalLog::initLogPath(char *logPath) {
-    LOGCATD("logFilePath %s", logPath);
-
-    char *main_log = "Hello--1--》 老铁；下午好, 今天喝咖啡吗？";
-    startWriteLog(main_log);
-
-}
-
-
-void LocalLog::startWriteLog(char *logContent) {
-    printf("start invoke testLocalWriteLog,logPath %s\n", logPath);
+    ERROR_LOG_PATH = logPath;
+    LOGCATD("ERROR_LOG_PATH %s",ERROR_LOG_PATH);
     createLogDirs(logPath);
+}
+void LocalLog::startWriteLog(char *logContent) {
+    LOGCATD("invoke startWriteLog,and the log path is : %s\n", ERROR_LOG_PATH);
+    createLogDirs(ERROR_LOG_PATH);
     const char *logName = "/mian_log.txt";
-    char *finalLogPath = (char *) malloc(1 + strlen(logPath) + strlen(logName));
-    strcpy(finalLogPath, logPath);
+    char *finalLogPath = (char *) malloc(1 + strlen(ERROR_LOG_PATH) + strlen(logName));
+    strcpy(finalLogPath, ERROR_LOG_PATH);
     strcat(finalLogPath, logName);
-    printf("finalLogPath %s\n", finalLogPath);
+    LOGCATD("finalLogPath %s\n", finalLogPath);
 
     FILE *file = fopen(finalLogPath, "a");
     if (file == NULL) {
         file = fopen(finalLogPath, "w");
-        printf("the file is not in exist,it will be created.\n");
+        LOGCATD("the file is not in exist,it will be created.\n");
         if (file == nullptr) {
-            printf("open file still in ERROR\n");
+            LOGCATD("open file still in ERROR\n");
         }
     }
     fputs("ERROR TIME :", file);
@@ -58,8 +41,6 @@ void LocalLog::startWriteLog(char *logContent) {
     fputs("\n", file);
     fflush(file);
     fclose(file);
-
-
 }
 
 void LocalLog::createLogDirs(const char *muldir) {
@@ -80,4 +61,13 @@ void LocalLog::createLogDirs(const char *muldir) {
         mkdir(str, 0777);
     }
 
+}
+
+void LocalLog:: needLog(char *func_name, char *error_type) {
+    const char *divider = " : ";
+    char *finalLog = static_cast<char *>(malloc(1 + strlen(func_name) + strlen(divider) + strlen(error_type)));
+    strcpy(finalLog, func_name);
+    strcat(finalLog, divider);
+    strcat(finalLog, error_type);
+    startWriteLog(finalLog);
 }

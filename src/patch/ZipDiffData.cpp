@@ -29,6 +29,9 @@
 #include <string.h>
 #include "patch_types.h"
 #include "../LogUtil.h"
+#include "../main_log/LocalLog.h"
+
+LocalLog zipDiffDataLocalLog;
 
 void ZipDiffData_init(ZipDiffData *self) {
     memset(self, 0, sizeof(ZipDiffData));
@@ -45,6 +48,7 @@ void ZipDiffData_close(ZipDiffData *self) {
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n"); \
         LOGCATD(#value" ERROR!\n")  ;              \
+        zipDiffDataLocalLog.needLog(#value,"in ZipDiffData");         \
         assert(false); return false; } }
 #define  check_clear(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \

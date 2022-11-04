@@ -33,6 +33,7 @@
 #include "../HDiffPatch/libParallel/parallel_import.h"
 #include "patch/patch_types.h"
 #include "../HDiffPatch/libHDiffPatch/HDiff/private_diff/mem_buf.h"
+#include "main_log/LocalLog.h"
 
 #ifndef _IS_NEED_MAIN
 #   define  _IS_NEED_MAIN 1
@@ -66,8 +67,15 @@ static void printUsage(){
 }
 
 #define PATCH_OPTIONS_ERROR 1
+LocalLog patchLocalLog;
 #define _options_check(value,errorInfo){ \
-    if (!(value)) { printf("options " errorInfo " ERROR!\n"); printUsage(); return PATCH_OPTIONS_ERROR; } }
+    if (!(value)) {                      \
+    printf("options " errorInfo " ERROR!\n"); \
+    patchLocalLog.needLog(#value ,#errorInfo);  \
+    printUsage();                        \
+    return PATCH_OPTIONS_ERROR;          \
+    }                                    \
+    }
 
 int zippatch_cmd_line(int argc, const char * argv[]);
 
