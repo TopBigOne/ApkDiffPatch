@@ -37,7 +37,8 @@
 using namespace hdiff_private;
 
 #define  check(value) { \
-    if (!(value)){ printf(#value" ERROR!\n");  \
+    if (!(value)){ printf(#value" ERROR!\n"); \
+           LOGCATE("DiffData ERROR : ",#value);   \
         assert(false); return false; } }
 #define  check_clear(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \
@@ -432,6 +433,7 @@ bool serializeZipDiffData(std::vector<TByte>& out_data, UnZipper* newZip,UnZippe
                           const std::vector<uint32_t>& oldRefList,
                           const std::vector<TByte>&    hdiffzData,
                           const hdiff_TCompress* compressPlugin){
+    LOGCATI("start serialize zip diff data");
     ZipDiffData  data;
     memset(&data,0,sizeof(ZipDiffData));
     data.PatchModel=0; //now must 0
@@ -451,6 +453,7 @@ bool serializeZipDiffData(std::vector<TByte>& out_data, UnZipper* newZip,UnZippe
     data.newRefCompressedSizeCount=newRefCompressedSizeList.size();
     data.oldZipIsDataNormalized=(UnZipper_isHaveApkV2Sign(oldZip)&&oldZip->_isDataNormalized)?1:0;
     data.oldIsFileDataOffsetMatch=(UnZipper_isHaveApkV2Sign(oldZip)&&oldZip->_isFileDataOffsetMatch)?1:0;
+    LOGCATD("serializeZipDiffData oldZipCESize: %d",data.oldZipCESize);
     data.oldZipCESize=UnZipper_CESize(oldZip);
     data.oldRefList=(uint32_t*)oldRefList.data();
     data.oldRefCount=oldRefList.size();

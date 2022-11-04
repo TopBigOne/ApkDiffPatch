@@ -162,19 +162,29 @@ int zippatch_cmd_line(int argc, const char * argv[]) {
     }else{
         _options_check(false,"count");
     }
+
+
+
+
     printf("oldZip   :\"%s\"\nzipDiff  :\"%s\"\noutNewZip:\"%s\"\n",oldZipPath,zipDiffPath,outNewZipPath);
-    if (tempUncompressFileName!=0)
-        printf("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",
-               maxUncompressMemory,tempUncompressFileName);
-    
+    LOGCATD("oldZip   :\"%s\"\nzipDiff  :\"%s\"\noutNewZip:\"%s\"\n",oldZipPath,zipDiffPath,outNewZipPath);
+    if (tempUncompressFileName!=0){
+        printf("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",maxUncompressMemory,tempUncompressFileName);
+        LOGCATD("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",maxUncompressMemory,tempUncompressFileName);
+    }
+
     double time0=clock_s();
     int exitCode=ZipPatch(oldZipPath,zipDiffPath,outNewZipPath,
                           maxUncompressMemory,tempUncompressFileName,(int)threadNum);
     double time1=clock_s();
-    if (exitCode==PATCH_SUCCESS)
+    if (exitCode == PATCH_SUCCESS) {
+        LOGCATD("zip file patch ok");
         printf("  zip file patch ok!\n");
-    else
+    } else {
+        LOGCATE("zip file patch error exitCode:%d", exitCode);
         printf("  zip file patch error!\n");
+    }
+
     printf("\nZipPatch time: %.3f s\n",(time1-time0));
     return exitCode;
 }

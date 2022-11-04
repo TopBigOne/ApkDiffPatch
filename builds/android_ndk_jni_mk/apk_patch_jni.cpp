@@ -2,25 +2,7 @@
 // Created by sisong on 2019-08-22.
 #include <jni.h>
 #include "apk_patch.h"
-#include "../../src/TT.h"
 #include <android/log.h>
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-JNIEXPORT int
-Java_com_github_sisong_ApkPatch_testNdk(JNIEnv *jenv, jobject jobj) {
-    TT tt;
-    // tt.testNdk();
-    __android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%s", "77777777");
-    return 123;
-}
-#ifdef __cplusplus
-}
-#endif
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,6 +15,10 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     const char *cPatchFilePath = jenv->GetStringUTFChars(patchFilePath, NULL);
     const char *cOutNewApkPath = jenv->GetStringUTFChars(outNewApkPath, NULL);
     const char *cTempFilePath = NULL;
+
+    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cOldApkPath     : %s ", cOldApkPath);
+    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cPatchFilePath  : %s", cPatchFilePath);
+    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cOutNewApkPath  : %s", cOutNewApkPath);
 
     if (tempUncompressFilePath != NULL) {
         cTempFilePath = jenv->GetStringUTFChars(tempUncompressFilePath, NULL);
