@@ -31,9 +31,13 @@
 #include <algorithm> //sort
 #include "../patch/Zipper.h"
 #include "../diff/DiffData.h"
+#include "../main_log/LocalLog.h"
+
+LocalLog normalizedLocalLog;
 
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n");  \
+           normalizedLocalLog.needLog(#value,"in normalized");  \
         result=false; if (!_isInClear){ goto clear; } } }
 
 struct TFileValue{
