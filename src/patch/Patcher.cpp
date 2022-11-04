@@ -45,7 +45,8 @@
 LocalLog patcherLocalLog;
 
 #define  check(value,error) { \
-    if (!(value)){ printf(#value" "#error"!\n"); \
+    if (!(value)){            \
+         printf(#value" "#error"!\n"); \
         LOGCATE(#value" "#error"!\n");           \
         patcherLocalLog.needLog(#value ,#error);  \
         if (result==PATCH_SUCCESS) result=error; if (!_isInClear){ goto clear; } } }
