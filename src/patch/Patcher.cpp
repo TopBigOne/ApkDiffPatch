@@ -62,7 +62,9 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     long long longTime = GetSysCurrentTime();
 
     char *LOG_PATH = "/data/user/0/com.example.testapkdiff/files/diff_patch/error_log";
-    initLogPath(LOG_PATH);
+
+    LocalLog localLog;
+    localLog.initLogPath(LOG_PATH);
 
     LOGCATD("longTime %lld", longTime);
 

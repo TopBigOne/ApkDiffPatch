@@ -39,7 +39,7 @@ APKNORM_OBJ := \
     src/normalized/normalized.o \
     src/diff/DiffData.o \
     $(ZIPPATCH_OBJ)
-    
+
 ZIPDIFF_OBJ := \
     src/zip_diff.o \
     src/diff/DiffData.o \
@@ -66,6 +66,9 @@ ZIPDIFF_OBJ := \
     lzma/C/MtDec.o \
     lzma/C/Threads.o \
     $(ZIPPATCH_OBJ)
+
+APK_ZIP_LOG_OBJ :=src/main_log/LocalLog.o
+
 
 DEF_FLAGS := -O3 -DNDEBUG -D_IS_USED_MULTITHREAD=1 -D_IS_USED_PTHREAD=1
 CFLAGS   += $(DEF_FLAGS)
@@ -100,6 +103,9 @@ ZipDiff: $(ZIPDIFF_OBJ)
 	$(CXX) $(ZIPDIFF_OBJ) $(LINK_LIB) -o ZipDiff
 ZipPatch: src/zip_patch.o $(ZIPPATCH_OBJ)
 	$(CXX) src/zip_patch.o $(ZIPPATCH_OBJ) $(LINK_LIB) -o ZipPatch
+ApkZipLog: $(APK_ZIP_LOG_OBJ)
+	$(CXX) $(APK_ZIP_LOG_OBJ) $(LINK_LIB) -o ApkZipLog
+ZipLOd :
 
 clean:
 	-rm -f ApkNormalized ZipDiff ZipPatch src/zip_patch.o $(ZIPDIFF_OBJ) $(APKNORM_OBJ)

@@ -35,6 +35,14 @@
 #include "../HDiffPatch/_atosize.h"
 #include "../HDiffPatch/libHDiffPatch/HDiff/private_diff/mem_buf.h"
 
+#include <stdio.h>
+#include "ctime"
+#include <unistd.h>
+#include <sys/stat.h>
+#include <cstring>
+#include <cstdlib>
+
+
 #ifndef _IS_NEED_MAIN
 #   define  _IS_NEED_MAIN 1
 #endif

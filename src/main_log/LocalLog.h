@@ -5,6 +5,15 @@
 #ifndef APKDIFFPATCH_LOCALLOG_H
 #define APKDIFFPATCH_LOCALLOG_H
 
-#endif //APKDIFFPATCH_LOCALLOG_H
 
-void initLogPath(char *logPath);
+class LocalLog {
+public:
+    void initLogPath(char *logPath);
+
+    void startWriteLog(char *logContent);
+
+    void createLogDirs( const char *muldir);
+};
+
+
+#endif //APKDIFFPATCH_LOCALLOG_H
