@@ -47,20 +47,9 @@ LocalLog patcherLocalLog;
 #define  check(value,error) { \
     if (!(value)){            \
          printf(#value" "#error"!\n"); \
-        LOGCATE(#value" "#error"!\n");           \
+        NATIVE_LOGCAT_E(#value" "#error"!\n");           \
         patcherLocalLog.needLog(#value ,#error);  \
         if (result==PATCH_SUCCESS) result=error; if (!_isInClear){ goto clear; } } }
-
-//
-//void needLog(char *func_name, char *error_type) {
-//    const char *divider = " : ";
-//    char *finalLog = static_cast<char *>(malloc(1 + strlen(func_name) + strlen(divider) + strlen(error_type)));
-//    strcpy(finalLog, func_name);
-//    strcat(finalLog, divider);
-//    strcat(finalLog, error_type);
-//    LocalLog localLog;
-//    localLog.startWriteLog(finalLog);
-//}
 
 #if (!_IS_NEED_VIRTUAL_ZIP)
 static
@@ -69,13 +58,8 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
                                        const hpatch_TStreamOutput* outNewZipStream,size_t maxUncompressMemory,
                                        const char* tempUncompressFileName,int threadNum,
                                        IVirtualZip_in* _virtual_in,IVirtualZip_out* virtual_out){
-    LOGCATD("start invoke VirtualZipPatchWithStream-L55");
-    long long longTime = GetSysCurrentTime();
+    NATIVE_LOGCAT_D("start invoke VirtualZipPatchWithStream-72");
 
-    char *LOG_PATH = "/data/user/0/com.example.testapkdiff/files/diff_patch/error_log";
-
-
-    LOGCATD("longTime %lld", longTime);
 
 #define HPATCH_CACHE_SIZE  (128*1024)
     UnZipper            oldZip;
@@ -260,15 +244,19 @@ TPatchResult VirtualZipPatch(const char* oldZipPath,const char* zipDiffPath,cons
 
     // 0,1;
     //  TPatchResult: 枚举
+    NATIVE_LOGCAT_D("start  hpatch_TFileStreamInput_open----oldZipStream---step 1");
     check(hpatch_TFileStreamInput_open(&oldZipStream,oldZipPath),PATCH_OPENREAD_ERROR);
 
 
+    NATIVE_LOGCAT_D("start  hpatch_TFileStreamInput_open----zipDiffStream---step 2");
     check(hpatch_TFileStreamInput_open(&zipDiffStream,zipDiffPath),PATCH_OPENREAD_ERROR);
 
+    NATIVE_LOGCAT_D("start  hpatch_TFileStreamOutput_open-------------------step 3");
     check(hpatch_TFileStreamOutput_open(&outNewZipStream,outNewZipPath,(hpatch_StreamPos_t)(-1)),PATCH_OPENWRITE_ERROR);
 
     hpatch_TFileStreamOutput_setRandomOut(&outNewZipStream,hpatch_TRUE);
 
+    NATIVE_LOGCAT_D("start  VirtualZipPatchWithStream-----------------------step 4");
     // 压缩操作
     result=VirtualZipPatchWithStream(&oldZipStream.base,&zipDiffStream.base,&outNewZipStream.base,
                                      maxUncompressMemory,tempUncompressFileName,threadNum,virtual_in,virtual_out);
@@ -293,7 +281,7 @@ clear:
 TPatchResult ZipPatch(const char* oldZipPath,const char* zipDiffPath,const char* outNewZipPath,
                       size_t maxUncompressMemory,const char* tempUncompressFileName,int threadNum){
 
-    LOGCATD("invoke ZipPatch");
+    NATIVE_LOGCAT_D("invoke ZipPatch by VirtualZipPatch");
     return VirtualZipPatch(oldZipPath,zipDiffPath,outNewZipPath,
                            maxUncompressMemory,tempUncompressFileName,threadNum,0,0);
 }

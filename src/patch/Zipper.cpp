@@ -36,7 +36,7 @@
 #include "../../HDiffPatch/decompress_plugin_demo.h"
 #include "../main_log/LocalLog.h"
 LocalLog zipperLocalLog;
-char * TAG = strdup("in Zipper");
+char * TAG = strdup("in Zipper");//NOLINT
 
 static const TCompressPlugin_zlib zipCompatibleCompressPlugin={
     {_zlib_compressType,_default_maxCompressedSize,_default_setParallelThreadNumber,_zlib_compress},

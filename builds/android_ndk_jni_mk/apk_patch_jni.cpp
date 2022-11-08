@@ -4,6 +4,7 @@
 #include "apk_patch.h"
 #include <android/log.h>
 #include "../../src/main_log/LocalLog.h"
+#include "../../src/LogUtil.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,9 +19,11 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     const char *cOutNewApkPath = jenv->GetStringUTFChars(outNewApkPath, NULL);
     const char *cTempFilePath = NULL;
 
-    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cOldApkPath     : %s ", cOldApkPath);
-    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cPatchFilePath  : %s", cPatchFilePath);
-    __android_log_print(ANDROID_LOG_INFO, "xiao_ya", "cOutNewApkPath  : %s", cOutNewApkPath);
+    LOGCATI("--------------------------------------------------------------------|");
+    LOGCATI("cOldApkPath     : %s ", cOldApkPath);
+    LOGCATI("cPatchFilePath  : %s", cPatchFilePath);
+    LOGCATI("cOutNewApkPath  : %s", cOutNewApkPath);
+    LOGCATI("--------------------------------------------------------------------|\n");
 
     if (tempUncompressFilePath != NULL) {
         cTempFilePath = jenv->GetStringUTFChars(tempUncompressFilePath, NULL);
@@ -36,7 +39,9 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     TPatchResult result = ApkPatch(cOldApkPath, cPatchFilePath, cOutNewApkPath,
                                    cMaxUncompressMemory, cTempFilePath, threadNum);
 
-    if (cTempFilePath != NULL) jenv->ReleaseStringUTFChars(tempUncompressFilePath, cTempFilePath);
+    if (cTempFilePath != NULL){
+        jenv->ReleaseStringUTFChars(tempUncompressFilePath, cTempFilePath);
+    }
 
     jenv->ReleaseStringUTFChars(outNewApkPath, cOutNewApkPath);
     jenv->ReleaseStringUTFChars(patchFilePath, cPatchFilePath);
@@ -53,10 +58,16 @@ extern "C" {
 #endif
 
 JNIEXPORT void
-Java_com_github_sisong_ApkPatch_initApkDiffPath(JNIEnv *env, jclass clazz, jstring log_path) {
+Java_com_github_sisong_ApkPatch_initApkDiff(JNIEnv *env, jclass clazz, jstring log_path,
+                                            jboolean is_need_log, jboolean is_debug) {
     LocalLog localLog;
     char *logPathChar = const_cast<char *>(env->GetStringUTFChars(log_path, JNI_FALSE));
-    localLog.initLogPath(logPathChar);
+    IS_BUILD_DEBUG = is_debug==JNI_TRUE;
+    localLog.initLogPath(logPathChar,is_need_log==JNI_TRUE,IS_BUILD_DEBUG);
+    NATIVE_LOGCAT_V("---------init apk diff native-------------------|");
+    NATIVE_LOGCAT_I(" initApkDiff #is_need_log : %d\n", is_need_log);
+    NATIVE_LOGCAT_D(" initApkDiff #is_debug    : %d\n", is_debug);
+    NATIVE_LOGCAT_W("------------------------------------------------|\n");
 }
 
 #ifdef __cplusplus

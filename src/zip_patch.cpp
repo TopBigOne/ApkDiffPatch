@@ -148,6 +148,7 @@ int zippatch_cmd_line(int argc, const char * argv[]) {
         isOutputVersion=hpatch_FALSE;
     if (isOutputVersion){
         printf("ApkDiffPatch::ZipPatch v" APKDIFFPATCH_VERSION_STRING "\n\n");
+        NATIVE_LOGCAT_D("ApkDiffPatch::ZipPatch v" APKDIFFPATCH_VERSION_STRING "\n\n");
         if (arg_values_size==0)
             return 0; //ok
     }
@@ -174,13 +175,11 @@ int zippatch_cmd_line(int argc, const char * argv[]) {
     }
 
 
-
-
     printf("oldZip   :\"%s\"\nzipDiff  :\"%s\"\noutNewZip:\"%s\"\n",oldZipPath,zipDiffPath,outNewZipPath);
-    LOGCATD("oldZip   :\"%s\"\nzipDiff  :\"%s\"\noutNewZip:\"%s\"\n",oldZipPath,zipDiffPath,outNewZipPath);
+    NATIVE_LOGCAT_D("oldZip   :\"%s\"\nzipDiff  :\"%s\"\noutNewZip:\"%s\"\n",oldZipPath,zipDiffPath,outNewZipPath);
     if (tempUncompressFileName!=0){
         printf("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",maxUncompressMemory,tempUncompressFileName);
-        LOGCATD("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",maxUncompressMemory,tempUncompressFileName);
+        NATIVE_LOGCAT_D("maxUncompressMemory:%" PRSizeT "\ntempUncompressFileName:\"%s\"\n",maxUncompressMemory,tempUncompressFileName);
     }
 
     double time0=clock_s();
@@ -188,10 +187,10 @@ int zippatch_cmd_line(int argc, const char * argv[]) {
                           maxUncompressMemory,tempUncompressFileName,(int)threadNum);
     double time1=clock_s();
     if (exitCode == PATCH_SUCCESS) {
-        LOGCATD("zip file patch ok");
+        NATIVE_LOGCAT_D("zip file patch ok");
         printf("  zip file patch ok!\n");
     } else {
-        LOGCATE("zip file patch error exitCode:%d", exitCode);
+        NATIVE_LOGCAT_E("zip file patch error exitCode:%d", exitCode);
         printf("  zip file patch error!\n");
     }
 
