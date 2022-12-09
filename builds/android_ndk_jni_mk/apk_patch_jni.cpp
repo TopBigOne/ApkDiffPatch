@@ -39,6 +39,11 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     TPatchResult result = ApkPatch(cOldApkPath, cPatchFilePath, cOutNewApkPath,
                                    cMaxUncompressMemory, cTempFilePath, threadNum);
 
+    LocalLog localLog;
+    if(result==PATCH_SUCCESS){
+        localLog.needLog("TPatchResult: ","finally , the apk diff patch is generated success.");
+    }
+
     if (cTempFilePath != NULL){
         jenv->ReleaseStringUTFChars(tempUncompressFilePath, cTempFilePath);
     }

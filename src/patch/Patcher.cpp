@@ -58,7 +58,7 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
                                        const hpatch_TStreamOutput* outNewZipStream,size_t maxUncompressMemory,
                                        const char* tempUncompressFileName,int threadNum,
                                        IVirtualZip_in* _virtual_in,IVirtualZip_out* virtual_out){
-    NATIVE_LOGCAT_D("start invoke VirtualZipPatchWithStream-72");
+    NATIVE_LOGCAT_D("invoke VirtualZipPatchWithStream   ---61");
 
 
 #define HPATCH_CACHE_SIZE  (128*1024)
@@ -121,18 +121,19 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     }
     
     check(ZipDiffData_openRead(&zipDiffData,zipDiffStream,decompressPlugin),PATCH_ZIPDIFFINFO_ERROR);
-    LOGCATD("oldZipCE_Size  by invoke ZipDiffData_openRead       : %zu",zipDiffData.oldZipCESize);
+    LOGCATD("VirtualZipPatchWithStream  zipDiffData.oldZipCESize   : %zu",zipDiffData.oldZipCESize);
 
     check(UnZipper_openStream(&oldZip,oldZipStream,zipDiffData.oldZipIsDataNormalized!=0,
                             zipDiffData.oldIsFileDataOffsetMatch!=0),PATCH_OPENREAD_ERROR);
+
     oldZipCESizeResult = zipDiffData.oldZipCESize;
     unzipper_cesize = UnZipper_CESize(&oldZip);
 
-    LOGCATD("oldZipCE_Size        : %zu",oldZipCESizeResult);
-    LOGCATD("unzipper_ce_size     : %zu",unzipper_cesize);
+    NATIVE_LOGCAT_D("oldZipCE_Size        : %zu",oldZipCESizeResult);
+    NATIVE_LOGCAT_D("unzipper_ce_size     : %zu",unzipper_cesize);
 
     if(oldZipCESizeResult!=unzipper_cesize){
-        LOGCATE("oldZipCESizeResult 和 oldZipCESizeResult 不相等");
+        NATIVE_LOGCAT_D("oldZipCESizeResult and  oldZipCESizeResult is not in equal.");
     }
     check(zipDiffData.oldZipCESize==UnZipper_CESize(&oldZip),PATCH_OLDDATA_ERROR);
 

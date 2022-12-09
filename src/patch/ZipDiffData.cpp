@@ -49,7 +49,7 @@ void ZipDiffData_close(ZipDiffData *self) {
 
 #define  check(value) { \
     if (!(value)){ printf(#value" ERROR!\n"); \
-        LOGCATD(#value" ERROR!\n")  ;              \
+        NATIVE_LOGCAT_E(#value" ERROR!\n")  ;              \
         zipDiffDataLocalLog.needLog(#value,TAG_ZipDiffData);         \
         assert(false); return false; } }
 #define  check_clear(value) { \
