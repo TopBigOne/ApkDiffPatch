@@ -4,6 +4,8 @@
 
 #include "LocalLog.h"
 #include "../LogUtil.h"
+#include <stdio.h>
+static char* sLastLogError = NULL;
 
 void LocalLog::initLogPath(char *logPath,bool isNeedLog,bool isDebug) {
     ERROR_LOG_PATH = logPath;
@@ -39,17 +41,19 @@ void LocalLog::createLogDirs(const char *muldir) {
 }
 
 void LocalLog:: needLog(char *func_name, char *error_type) {
+    sLastLogError = func_name;
     if(!IS_NEED_LOG){
         NATIVE_LOGCAT_W("needLog : the diff log switch is off.\n");
         return;
     }
-    NATIVE_LOGCAT_E("needLog : func_name: %s,error_type: %s,",func_name,error_type)
+    NATIVE_LOGCAT_E("needLog : func_name: %s,error_type: %s,", func_name, error_type)
     const char *divider = " : ";
-    char *finalLog = static_cast<char *>(malloc(1 + strlen(func_name) + strlen(divider) + strlen(error_type)));
-    strcpy(finalLog, func_name);
-    strcat(finalLog, divider);
-    strcat(finalLog, error_type);
+    auto bufferSize = 1 + strlen(func_name) + strlen(divider) + strlen(error_type);
+    char *finalLog = static_cast<char *>(malloc(bufferSize));
+    memset(finalLog, 0, bufferSize);
+    snprintf(finalLog, bufferSize, "%s:%s", func_name, error_type);
     startWriteLog(finalLog);
+    free(finalLog);
 }
 
 void LocalLog::startWriteLog(char *logContent) {
@@ -83,4 +87,7 @@ void LocalLog::startWriteLog(char *logContent) {
     fputs("\n", file);
     fflush(file);
     fclose(file);
+}
+const  char *LocalLog::getLastLog() {
+    return sLastLogError;
 }

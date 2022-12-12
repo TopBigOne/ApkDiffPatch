@@ -50,8 +50,7 @@ static hpatch_TDecompress*      decompressPlugin=&zlibDecompressPlugin;
 
 #define check(v) { \
                     if (!(v)) { \
-                    assert(false); \
-                   zipperLocalLog.needLog(#v,TAG);\
+                    zipperLocalLog.needLog(#v,TAG);\
                     return false;  \
                     }           \
                     }
@@ -437,8 +436,12 @@ static bool _UnZipper_open_fvce(UnZipper* self,ZipFilePos_t fvceSize,int fileCou
     return true;
 }
 
-bool UnZipper_openStream(UnZipper* self,const hpatch_TStreamInput* zipFileStream,
-                         bool isDataNormalized,bool isFileDataOffsetMatch){
+bool UnZipper_openStream(UnZipper* self,const hpatch_TStreamInput* zipFileStream,bool isDataNormalized,bool isFileDataOffsetMatch){
+    NATIVE_LOGCAT_I("|---------UnZipper_openStream---------↓");
+    NATIVE_LOGCAT_D("| isDataNormalized      : %s",isDataNormalized == true ? " true" : "false");
+    NATIVE_LOGCAT_D("| isFileDataOffsetMatch : %s",isFileDataOffsetMatch == true ? " true" : "false");
+    NATIVE_LOGCAT_I("|---------UnZipper_openStream----------↑\n");
+
     check(_UnZipper_open_begin(self));
     self->stream=zipFileStream;
     //_sreachVCE

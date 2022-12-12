@@ -340,6 +340,8 @@ static bool _serializeZipDiffData(std::vector<TByte>& out_data,const ZipDiffData
                                   const hdiff_TCompress* compressPlugin,const UnZipper* newZip){
     std::vector<TByte> headData;
     {//head data
+
+        NATIVE_LOGCAT_I("==> start _serializeZipDiffData <==");
         uint32_t backPairNew=~(uint32_t)0;
         uint32_t backPairOld=~(uint32_t)0;
         for (size_t i=0;i<data->samePairCount;++i){

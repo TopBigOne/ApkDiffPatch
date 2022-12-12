@@ -2,7 +2,6 @@
 // Created by sisong on 2019-08-22.
 #include <jni.h>
 #include "apk_patch.h"
-#include <android/log.h>
 #include "../../src/main_log/LocalLog.h"
 #include "../../src/LogUtil.h"
 
@@ -19,11 +18,12 @@ Java_com_github_sisong_ApkPatch_patch(JNIEnv *jenv, jobject jobj,
     const char *cOutNewApkPath = jenv->GetStringUTFChars(outNewApkPath, NULL);
     const char *cTempFilePath = NULL;
 
-    LOGCATI("--------------------------------------------------------------------|");
-    LOGCATI("cOldApkPath     : %s ", cOldApkPath);
-    LOGCATI("cPatchFilePath  : %s", cPatchFilePath);
-    LOGCATI("cOutNewApkPath  : %s", cOutNewApkPath);
-    LOGCATI("--------------------------------------------------------------------|\n");
+    LOGCATI("|--------------------------------------------------------------------↓");
+    LOGCATI("| cOldApkPath     : %s ", cOldApkPath);
+    LOGCATI("| cPatchFilePath  : %s", cPatchFilePath);
+    LOGCATI("| cOutNewApkPath  : %s", cOutNewApkPath);
+    LOGCATI("|--------------------------------------------------------------------↑");
+    LOGCATI("")
 
     if (tempUncompressFilePath != NULL) {
         cTempFilePath = jenv->GetStringUTFChars(tempUncompressFilePath, NULL);
@@ -63,16 +63,33 @@ extern "C" {
 #endif
 
 JNIEXPORT void
-Java_com_github_sisong_ApkPatch_initApkDiff(JNIEnv *env, jclass clazz, jstring log_path,
+Java_com_github_sisong_ApkPatch_initApkDiff(JNIEnv *env, jobject clazz, jstring log_path,
                                             jboolean is_need_log, jboolean is_debug) {
     LocalLog localLog;
     char *logPathChar = const_cast<char *>(env->GetStringUTFChars(log_path, JNI_FALSE));
     IS_BUILD_DEBUG = is_debug==JNI_TRUE;
     localLog.initLogPath(logPathChar,is_need_log==JNI_TRUE,IS_BUILD_DEBUG);
-    NATIVE_LOGCAT_V("---------init apk diff native-------------------|");
-    NATIVE_LOGCAT_I(" initApkDiff #is_need_log : %d\n", is_need_log);
-    NATIVE_LOGCAT_D(" initApkDiff #is_debug    : %d\n", is_debug);
-    NATIVE_LOGCAT_W("------------------------------------------------|\n");
+    NATIVE_LOGCAT_V("|---------init apk diff native-------------------↓");
+    NATIVE_LOGCAT_I("| initApkDiff #is_need_log : %d\n", is_need_log);
+    NATIVE_LOGCAT_D("| initApkDiff #is_debug    : %d\n", is_debug);
+    NATIVE_LOGCAT_W("|------------------------------------------------↑\n");
+
+    LocalLog::getLastLog();
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+JNIEXPORT jstring
+Java_com_github_sisong_ApkPatch_getLastLog(JNIEnv *env, jobject clazz) {
+   return env->NewStringUTF(LocalLog::getLastLog());
 }
 
 #ifdef __cplusplus

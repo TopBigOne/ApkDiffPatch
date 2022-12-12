@@ -32,11 +32,13 @@ Adp_Files := $(ADP_PATH)/NewStream.cpp \
              $(ADP_PATH)/Patcher.cpp \
              $(ADP_PATH)/ZipDiffData.cpp \
              $(ADP_PATH)/Zipper.cpp
+MAIN_LOG  := $(LOCAL_PATH)/../../src/main_log
+Log_Files := $(MAIN_LOG)/LocalLog.cpp \
 
 Src_Files := $(LOCAL_PATH)/apk_patch_jni.cpp \
              $(LOCAL_PATH)/apk_patch.cpp 
 
-LOCAL_SRC_FILES  := $(Src_Files) $(Lzma_Files) $(Zlib_Files) $(Hdp_Files) $(Adp_Files)
+LOCAL_SRC_FILES  := $(Src_Files) $(Lzma_Files) $(Zlib_Files) $(Hdp_Files) $(Adp_Files) $(Log_Files)
 
 DEF_FLAGS := -O1 -D_7ZIP_ST -D_IS_USED_MULTITHREAD=1 -D_IS_USED_PTHREAD=1
 ifeq ($(TARGET_ARCH_ABI),arm64-v8a)

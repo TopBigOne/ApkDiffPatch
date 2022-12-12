@@ -58,7 +58,7 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
                                        const hpatch_TStreamOutput* outNewZipStream,size_t maxUncompressMemory,
                                        const char* tempUncompressFileName,int threadNum,
                                        IVirtualZip_in* _virtual_in,IVirtualZip_out* virtual_out){
-    NATIVE_LOGCAT_D("invoke VirtualZipPatchWithStream   ---61");
+    NATIVE_LOGCAT_D("start VirtualZipPatchWithStream ");
 
 
 #define HPATCH_CACHE_SIZE  (128*1024)
@@ -123,14 +123,18 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     check(ZipDiffData_openRead(&zipDiffData,zipDiffStream,decompressPlugin),PATCH_ZIPDIFFINFO_ERROR);
     LOGCATD("VirtualZipPatchWithStream  zipDiffData.oldZipCESize   : %zu",zipDiffData.oldZipCESize);
 
+    // 会出现bug
     check(UnZipper_openStream(&oldZip,oldZipStream,zipDiffData.oldZipIsDataNormalized!=0,
                             zipDiffData.oldIsFileDataOffsetMatch!=0),PATCH_OPENREAD_ERROR);
 
     oldZipCESizeResult = zipDiffData.oldZipCESize;
     unzipper_cesize = UnZipper_CESize(&oldZip);
 
-    NATIVE_LOGCAT_D("oldZipCE_Size        : %zu",oldZipCESizeResult);
-    NATIVE_LOGCAT_D("unzipper_ce_size     : %zu",unzipper_cesize);
+    NATIVE_LOGCAT_I("|---------------------zip info-----------------↓");
+    NATIVE_LOGCAT_D("| oldZipCE_Size     : %zu",oldZipCESizeResult);
+    NATIVE_LOGCAT_D("| unzipper_ce_size  : %zu",unzipper_cesize);
+    NATIVE_LOGCAT_I("|---------------------zip info-----------------↑");
+    NATIVE_LOGCAT_I("    ");
 
     if(oldZipCESizeResult!=unzipper_cesize){
         NATIVE_LOGCAT_D("oldZipCESizeResult and  oldZipCESizeResult is not in equal.");
@@ -171,7 +175,6 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
     check(OldStream_open(&oldStream,&oldZip,zipDiffData.oldRefList,zipDiffData.oldRefCount,
                          0,0,input_ref _VIRTUAL_IN(virtual_in)), PATCH_OLDSTREAM_ERROR);
 
-    LOGCATD("start check :oldStream.stream->streamSize==diffInfo.oldDataSize,PATCH_OLDDATA_ERROR");
     check(oldStream.stream->streamSize==diffInfo.oldDataSize,PATCH_OLDDATA_ERROR);
     
     check(Zipper_openStream(&out_newZip,outNewZipStream,(int)zipDiffData.newZipFileCount,
@@ -191,7 +194,7 @@ TPatchResult VirtualZipPatchWithStream(const hpatch_TStreamInput* oldZipStream,c
 
     patch_decompress_with_cache_result = patch_decompress_with_cache(newStream.stream, oldStream.stream, zipDiffData.hdiffzData,
                                                                      decompressPlugin, temp_cache, temp_cache + HPATCH_CACHE_SIZE);
-    LOGCATD("patch_decompress_with_cache_result : %d", patch_decompress_with_cache_result);
+    LOGCATE("patch_decompress_with_cache_result : %s", patch_decompress_with_cache_result == 0 ? "Failure" : "Success");
 
     check(patch_decompress_with_cache_result, PATCH_HPATCH_ERROR);
 
@@ -238,19 +241,28 @@ TPatchResult VirtualZipPatch(const char* oldZipPath,const char* zipDiffPath,cons
     bool            _isInClear=false;
     
     hpatch_TFileStreamInput_init(&zipDiffStream);
+    // init oldZipStream
     hpatch_TFileStreamInput_init(&oldZipStream);
+    // init outNewZipStream
     hpatch_TFileStreamOutput_init(&outNewZipStream);
+    hpatch_BOOL openReadOldZipResult = hpatch_FALSE;
+    hpatch_BOOL openReadZipDiffResult = hpatch_FALSE;
 
 
 
     // 0,1;
     //  TPatchResult: 枚举
     NATIVE_LOGCAT_D("start  hpatch_TFileStreamInput_open----oldZipStream---step 1");
-    check(hpatch_TFileStreamInput_open(&oldZipStream,oldZipPath),PATCH_OPENREAD_ERROR);
+    openReadOldZipResult = hpatch_TFileStreamInput_open(&oldZipStream, oldZipPath);
+    check(openReadOldZipResult, PATCH_OPENREAD_OLD_APK_ERROR); // error : 14
+    NATIVE_LOGCAT_D("openReadOldZipResult : %s ",openReadOldZipResult == hpatch_FALSE ? "failure":" success");
 
 
     NATIVE_LOGCAT_D("start  hpatch_TFileStreamInput_open----zipDiffStream---step 2");
-    check(hpatch_TFileStreamInput_open(&zipDiffStream,zipDiffPath),PATCH_OPENREAD_ERROR);
+    openReadZipDiffResult=hpatch_TFileStreamInput_open(&zipDiffStream,zipDiffPath);
+    check(openReadZipDiffResult,PATCH_OPENREAD_DIFF_FILE_ERROR);// error : 15
+    NATIVE_LOGCAT_D("openReadZipDiffResult : %s ",openReadZipDiffResult == hpatch_FALSE ? "failure":" success");
+
 
     NATIVE_LOGCAT_D("start  hpatch_TFileStreamOutput_open-------------------step 3");
     check(hpatch_TFileStreamOutput_open(&outNewZipStream,outNewZipPath,(hpatch_StreamPos_t)(-1)),PATCH_OPENWRITE_ERROR);
@@ -258,7 +270,7 @@ TPatchResult VirtualZipPatch(const char* oldZipPath,const char* zipDiffPath,cons
     hpatch_TFileStreamOutput_setRandomOut(&outNewZipStream,hpatch_TRUE);
 
     NATIVE_LOGCAT_D("start  VirtualZipPatchWithStream-----------------------step 4");
-    // 压缩操作
+    // 压缩操作 // error : 1
     result=VirtualZipPatchWithStream(&oldZipStream.base,&zipDiffStream.base,&outNewZipStream.base,
                                      maxUncompressMemory,tempUncompressFileName,threadNum,virtual_in,virtual_out);
 clear:

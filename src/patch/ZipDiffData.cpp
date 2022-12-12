@@ -75,6 +75,13 @@ static bool _openZipDiffData(const hpatch_TStreamInput *diffData, hpatch_TDecomp
     if ((size_t) readLen > diffData->streamSize)
         readLen = (int) diffData->streamSize;
     check(diffData->read(diffData, 0, buf, buf + readLen));
+    NATIVE_LOGCAT_I(" ")
+    NATIVE_LOGCAT_I("|-------------------------_openZipDiffData------------------------------↓")
+    NATIVE_LOGCAT_D("| kVersionType    : %s",kVersionType)
+    NATIVE_LOGCAT_D("| kVersionTypeLen : %d",kVersionTypeLen)
+    NATIVE_LOGCAT_D("| TByte buffer    : %s",buf)
+    NATIVE_LOGCAT_I("|-------------------------_openZipDiffData------------------------------↑\n")
+    NATIVE_LOGCAT_I(" ")
     //check type+version
     check(0 == strncmp((const char *) buf, kVersionType, kVersionTypeLen));
     {//read compressType
